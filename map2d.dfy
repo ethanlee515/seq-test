@@ -6,6 +6,7 @@ requires 0 <= j1 < j2 <= |xs|
 requires forall j :: j1 <= j < j2 ==> f.requires(xs[j])
 ensures |xs| == |ys|
 ensures forall j :: 0 <= j < |xs| ==> ys[j] == if j1 <= j < j2 then f(xs[j]) else xs[j]
+//ensures forall j :: j1 <= j < j2 ==> ys[j] == f(xs[j])
 {
     xs[0 .. j1] + Map(f, xs[j1 .. j2]) + xs[j2 ..]
 }
@@ -20,12 +21,11 @@ ensures forall i, j ::
     |ys| == |xs| && |ys[i]| == |xs[i]| &&
     ys[i][j] == if i1 <= i < i2 && j1 <= j < j2 then f(xs[i][j]) else xs[i][j]
 {
-    xs[0 .. i1] +
-    Map(x
+
+    MapRange(x
         requires j2 <= |x|
         requires forall j :: j1 <= j < j2 ==> f.requires(x[j])
-        => MapRange(f, x, j1, j2), xs[i1 .. i2]) +
-    xs[i2 ..]
+        => MapRange(f, x, j1, j2), xs, i1, i2)
 }
 
 function method Double(x: int) : (y : int)
