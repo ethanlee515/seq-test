@@ -14,10 +14,11 @@ function method Map2D<T>(f: T --> T, xs: seq<seq<T>>, i1: int, i2: int, j1: int,
 requires 0 <= i1 < i2 <= |xs|
 requires forall i :: 0 <= i < |xs| ==> 0 <= j1 < j2 <= |xs[i]|
 requires forall i, j :: 0 <= i < |xs| && 0 <= j < |xs[i]| ==> f.requires(xs[i][j])
-ensures |xs| == |ys|
-ensures forall i :: 0 <= i < |xs| ==> (|ys[i]| == |xs[i]| &&
-    (forall j :: 0 <= j < |xs[i]| ==>
-        ys[i][j] == if i1 <= i < i2 && j1 <= j < j2 then f(xs[i][j]) else xs[i][j]))
+ensures forall i, j ::
+    0 <= i < |xs| ==>
+    0 <= j < |xs[i]| ==>
+    |ys| == |xs| && |ys[i]| == |xs[i]| &&
+    ys[i][j] == if i1 <= i < i2 && j1 <= j < j2 then f(xs[i][j]) else xs[i][j]
 {
     xs[0 .. i1] +
     Map(x
